@@ -1,0 +1,70 @@
+.card {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.card-header, .card-category-header {
+  background: linear-gradient(90deg, #ec4899, #be123c);
+  color: #fff;
+  font-weight: 600;
+  font-size: 1.1rem;
+  border-radius: 12px 12px 0 0;
+  padding: 0.8rem 1rem;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.card-body {
+  padding: 1rem;
+}
+
+.card-body h5 {
+  margin-bottom: 0.7rem;
+  font-weight: 600;
+}
+
+.card-body .ant-progress {
+  margin: 0.5rem 0;
+}
+
+h4 {
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #be123c;
+  text-transform: capitalize;
+  text-align: center;
+}
+
+.card-category {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.card-category .card {
+  margin-bottom: 0.5rem;
+}
+
+.card-category::-webkit-scrollbar {
+  width: 6px;
+}
+
+.card-category::-webkit-scrollbar-thumb {
+  background-color: rgba(0,0,0,0.2);
+  border-radius: 3px;
+}
+
+.card-category::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+@media (max-width: 768px) {
+  .card-body .ant-progress {
+    width: 100% !important;
+  }
+}
