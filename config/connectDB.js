@@ -3,12 +3,16 @@ const colors = require('colors');
 
 const connectDb = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URL);
+    await mongoose.connect(process.env.MONGO_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+
     console.log(`MongoDB connected: ${mongoose.connection.host}`.bgCyan.white);
   } catch (error) {
-    console.log(`MongoDB connection error: ${error}`.bgRed);
+    console.error(`MongoDB connection error: ${error.message}`.bgRed.white);
+    process.exit(1); // Exit process on failure
   }
 };
-
 
 module.exports = connectDb;

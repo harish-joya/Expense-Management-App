@@ -1,34 +1,37 @@
-const express = require('express')
-const cors = require('cors')
-const morgan = require('morgan')
-const dotenv = require('dotenv')
-const colors = require('colors')
-const connectDb = require('./config/connectDB')
-const path = require('path')
-const app = express()
-dotenv.config()
+const express = require('express');
+const cors = require('cors');
+const morgan = require('morgan');
+const dotenv = require('dotenv');
+const connectDb = require('./config/connectDB');
+const path = require('path');
 
-connectDb()
+dotenv.config(); // Load environment variables
 
-app.use(morgan('dev'))
-app.use(express.json())
-app.use(cors())
+const app = express();
 
-app.use('/api/v1/user', require('./routes/userRoute'))
-app.use('/api/v1/user/transactions', require('./routes/transactionRoutes'))
+// Connect to MongoDB
+connectDb();
 
-//static files
-app.use(express.static(path.join(__dirname,'./client/build')))
+// Middleware
+app.use(morgan('dev'));
+app.use(express.json());
+app.use(cors());
 
-app.get('*', function(req,res){
-    res.sendFile(path.join(__dirname, './client/build/index.html'))
-})
+// API Routes
+app.use('/api/v1/user', require('./routes/userRoute'));
+app.use('/api/v1/user/transactions', require('./routes/transactionRoutes'));
 
-//port
-const PORT = process.env.PORT || 8000
+// Serve React static files
+const clientBuildPath = path.join(__dirname, './client/build');
+app.use(express.static(clientBuildPath));
 
+// Fallback for React Router (catch-all route)
+app.get('*', (req, res) => {
+    res.sendFile(path.join(clientBuildPath, 'index.html'));
+});
 
-//listen server
-app.listen(PORT, () =>{
-    console.log(`Server is running on PORT = ${PORT}`);
-})
+// Start server
+const PORT = process.env.PORT || 8000;
+app.listen(PORT, () => {
+  console.log(`Server is running on PORT = ${PORT}`.cyan.bold);
+});
