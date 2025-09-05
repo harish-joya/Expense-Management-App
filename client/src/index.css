@@ -53,3 +53,15 @@ html, body, #root {
   text-align: center;      
   font-size: 1rem;
 }
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* full screen height */
+}
+
+.content {
+  flex: 1; /* this pushes footer down */
+  padding: 1rem;
+  overflow-x: hidden; /* prevents side scroll issues */
+}

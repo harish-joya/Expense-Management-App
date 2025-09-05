@@ -1,106 +1,132 @@
-.filters {
+.homepage-filters {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
   align-items: center;
+  justify-content: space-between;
   margin-bottom: 1.5rem;
-  background-color: #f8f9fa;
-  padding: 1rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  padding: 1.5rem 1rem;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #fff, #fef3c7);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  gap: 1rem; /* space between rows when stacked */
+  transition: all 0.3s ease;
 }
 
-.filters h6 {
-  margin-bottom: 0.5rem;
-  font-weight: 600;
+/* Hover effect for container */
+.homepage-filters:hover {
+  box-shadow: 0 12px 25px rgba(236, 72, 153, 0.2);
+  transform: translateY(-2px);
 }
 
-.filters .ant-select {
-  width: 150px;
-}
-
-.filters .ant-picker {
-  width: 220px;
-}
-
-.switch-icon {
+/* Left, Center, Right sections */
+.filter-left,
+.filter-right {
   display: flex;
   align-items: center;
-  font-size: 1.5rem;
+  gap: 1rem;
+}
+
+/* Center icons wrapper */
+.switch-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  background: linear-gradient(120deg, #fff6f6, #fef3c7);
+  border: 1px solid #ec4899;
+  border-radius: 16px;
+  padding: 10px 20px;
+  box-shadow: 0 4px 12px rgba(236, 72, 153, 0.1);
+  transition: all 0.3s ease;
+}
+
+.switch-icon:hover {
+  background: linear-gradient(to right, #fce7f3, #fee2e2);
+  box-shadow: 0 8px 18px rgba(236, 72, 153, 0.2);
+  transform: translateY(-2px);
+}
+
+.icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(120deg, #fef3c7, #fee2e2);
+  border: 1px solid #ec4899;
+  border-radius: 12px;
+  width: 50px;
+  height: 50px;
   cursor: pointer;
+  font-size: 1.5rem;
+  color: #6b7280;
+  transition: all 0.3s ease;
 }
 
-.active-icon {
-  color: #ec4899;
+.icon-wrapper.active {
+  background: linear-gradient(to right, #ec4899, #be123c);
+  color: #fff;
+  border: none;
+  box-shadow: 0 6px 15px rgba(236, 72, 153, 0.3);
 }
 
-.inactive-icon {
-  color: rgba(0,0,0,0.3);
-  transition: color 0.2s;
-}
-
-.inactive-icon:hover {
+.icon-wrapper:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(236, 72, 153, 0.2);
   color: #be123c;
 }
 
-.filters .btn-primary {
+/* Add New button */
+.add-btn {
   height: 38px;
   font-weight: 600;
   background: linear-gradient(to right, #ec4899, #be123c);
   border: none;
-  border-radius: 8px;
-  transition: transform 0.2s;
+  border-radius: 12px;
+  transition: transform 0.2s, box-shadow 0.3s;
 }
 
-.filters .btn-primary:hover {
+.add-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 6px 15px rgba(236, 72, 153, 0.3);
 }
 
+/* Select & Datepicker styling */
+.homepage-filters .ant-select {
+  width: 180px;
+  border-radius: 12px;
+  border: 1px solid #ec4899;
+  background: #fff;
+  font-weight: 500;
+}
+
+.homepage-filters .ant-select .ant-select-selector {
+  border-radius: 12px !important;
+}
+
+.homepage-filters .ant-picker {
+  width: 220px;
+  border-radius: 12px;
+  border: 1px solid #ec4899;
+  background: #fff;
+}
+
+/* Table container for horizontal scroll only */
+.table-container {
+  overflow-x: auto;  /* horizontal scroll */
+  overflow-y: hidden; /* disables vertical scroll */
+  margin-top: 1.5rem;
+}
+
+.table-wrapper {
+  min-width: 800px;  /* table minimum width */
+  width: max-content; /* table takes necessary width */
+}
+
+/* Table styling */
 .content .ant-table {
   background-color: #fff;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-}
-
-.ant-modal-footer {
-  display: none; 
-}
-
-.btn-secondary {
-  background: linear-gradient(to right, #ec4899, #be123c);
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 0.4rem 1.2rem;
-  font-weight: 600;
-}
-
-.btn-secondary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-
-.filters-container {
-  background-color: #f9fafb; 
-  border-radius: 12px;
-  padding: 16px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05); 
-  margin-bottom: 24px; 
-}
-
-.filters h6 {
-  font-weight: 600;
-  margin-bottom: 6px;
-}
-
-.antd-table-wrapper {
-  background: #ffffff;
-  border-radius: 12px;
-  padding: 1rem;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  margin-top: 1.5rem;
 }
 
 .ant-table-tbody > tr:hover {
@@ -130,6 +156,13 @@
   font-weight: 600;
 }
 
+/* Action icons spacing */
+.action-icons {
+  display: flex;
+  gap: 1rem; /* spacing between edit & delete */
+  justify-content: center;
+}
+
 .anticon {
   cursor: pointer;
   font-size: 1.2rem;
@@ -139,3 +172,65 @@
 .anticon:hover {
   color: #be123c;
 }
+
+/* Modal buttons */
+.btn-secondary {
+  background: linear-gradient(to right, #ec4899, #be123c);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 0.4rem 1.2rem;
+  font-weight: 600;
+}
+
+.btn-secondary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(236, 72, 153, 0.2);
+}
+
+/* Responsive for smaller screens */
+@media (max-width: 768px) {
+  .homepage-filters {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .filter-left,
+  .filter-right,
+  .filter-center {
+    flex-direction: column;
+    gap: 0.5rem;
+    justify-content: center;
+    align-items: stretch; /* make children full width */
+  }
+
+  /* Make Select and DatePicker full width */
+  .homepage-filters .ant-select,
+  .homepage-filters .ant-picker {
+    width: 100% !important;
+  }
+
+  .add-btn {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .table-wrapper {
+    min-width: 600px; /* reduce table width slightly */
+  }
+}
+/* Center selected value in Ant Design Select */
+.custom-select .ant-select-selector {
+  display: flex !important;
+  justify-content: center !important; /* center horizontally */
+  align-items: center !important;     /* center vertically */
+  text-align: center;
+}
+
+.custom-select .ant-select-selection-placeholder {
+  text-align: center;
+  width: 100%;
+} 
+
+

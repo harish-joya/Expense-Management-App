@@ -1,60 +1,87 @@
-.navbar {
-  background: linear-gradient(90deg, #ec4899, #be123c);
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  padding: 0.8rem 2rem;
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background: linear-gradient(to right, #ec4899, #be123c);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.navbar-brand {
-  font-weight: 700;
-  font-size: 1.8rem;
-  color: #fff !important;
-  letter-spacing: 1px;
-}
-
-.navbar-nav .nav-link {
-  color: #fff !important;
-  font-weight: 500;
-  margin-right: 1rem;
-  transition: all 0.3s ease;
-}
-
-.navbar-nav .nav-link:hover {
-  color: #ffd700 !important;
-  text-decoration: underline;
-}
-
-.navbar-nav .nav-link.active {
-  border-bottom: 2px solid #fff;
-  font-weight: 600;
-}
-
-.navbar-nav li p.nav-link {
+.heading {
+  font-size: 1.5rem;
   color: #fff;
-  margin-bottom: 0;
+  font-weight: 700;
+}
+
+.desktop-menu {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.2rem 0.6rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  color: #fff;
   font-weight: 500;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.navbar-nav li .btn-primary {
-  background: #fff;
-  color: #be123c;
-  font-weight: 600;
-  border-radius: 8px;
-  border: none;
-  padding: 0.4rem 1rem;
-  transition: all 0.3s ease;
-}
-
-.navbar-nav li .btn-primary:hover {
-  background: #f1f1f1;
-  color: #ec4899;
+.user-info:hover {
   transform: translateY(-2px);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
-.navbar-toggler {
-  border-color: rgba(255, 255, 255, 0.3);
+.user-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  color: #ec4899;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 16px;
 }
 
-.navbar-toggler-icon {
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba%28255, 255, 255, 0.9%29' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/ %3E%3C/svg%3E");
+.username {
+  font-size: 0.95rem;
+}
+
+.logout-btn {
+  font-weight: 600;
+  background: linear-gradient(to right, #f97316, #ea580c);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 0.4rem 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(249, 115, 22, 0.4);
+}
+
+.mobile-menu {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .desktop-menu {
+    display: none; 
+  }
+  .mobile-menu {
+    display: block; 
+  }
 }

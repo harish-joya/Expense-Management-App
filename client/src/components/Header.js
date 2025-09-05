@@ -1,47 +1,74 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
+import { Drawer, Button, Typography } from "antd";
 import '../styles/Header.css';
+import { MenuOutlined, UserOutlined, LogoutOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
-import { Link, useNavigate } from 'react-router-dom'
-
+const { Text } = Typography;
 
 const Header = () => {
-  const [loginUser, setLoginUser] = useState('')
+  const [loginUser, setLoginUser] = useState(null);
+  const [drawerVisible, setDrawerVisible] = useState(false);
   const navigate = useNavigate();
-  useEffect(() => {
-    const storedData = JSON.parse(localStorage.getItem('user'))
-    if (storedData && storedData.user) {
-      setLoginUser(storedData.user) 
-    }
-  }, [])
 
-  const logoutHandler = () =>{
-    localStorage.removeItem('user')
-    navigate("/login")
-  }
+  useEffect(() => {
+    const storedData = JSON.parse(localStorage.getItem("user"));
+    if (storedData && storedData.user) setLoginUser(storedData.user);
+  }, []);
+
+  const logoutHandler = () => {
+    localStorage.removeItem("user");
+    navigate("/login");
+  };
 
   return (
-    <>
-        <nav className="navbar navbar-expand-lg bg-body-tertiary">
-          <div className="container-fluid">
-            <Link className="navbar-brand" to="/">Expense-Manager</Link>
-            <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-              <span className="navbar-toggler-icon" />
-            </button>
-            <div className="collapse navbar-collapse" id="navbarSupportedContent">
-              <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-                <li className="nav-item d-flex align-items-center me-3">
-                  <i className="bi bi-person-circle me-2" style={{ fontSize: '1.2rem' }}></i>
-                  <span className="nav-link mb-0">{loginUser && loginUser.username}</span>
-                </li>
-                <li className="nav-item">
-                  <button className="btn btn-primary" onClick={logoutHandler}>Logout</button>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </nav>
-    </>
-  )
-}
+    <header className="header">
+      {/* Heading */}
+      <Text strong className="heading">Expense-Manager</Text>
 
-export default Header
+      {/* Desktop Menu */}
+      {loginUser && (
+        <div className="desktop-menu">
+          <div className="user-info">
+            <div className="user-icon">
+              {loginUser.username.charAt(0).toUpperCase()}
+            </div>
+            <span className="username">{loginUser.username}</span>
+          </div>
+          <button className="logout-btn" onClick={logoutHandler}>
+            <LogoutOutlined /> Logout
+          </button>
+        </div>
+      )}
+
+      {/* Mobile Hamburger */}
+      <Button
+        className="mobile-menu"
+        type="primary"
+        icon={<MenuOutlined />}
+        onClick={() => setDrawerVisible(true)}
+      />
+
+      {/* Drawer for mobile */}
+      <Drawer
+        placement="right"
+        onClose={() => setDrawerVisible(false)}
+        open={drawerVisible}
+      >
+        {loginUser && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 15 }}>
+            <Text>
+              <UserOutlined style={{ marginRight: 5 }} />
+              {loginUser.username}
+            </Text>
+            <button className="logout-btn" onClick={logoutHandler}>
+              <LogoutOutlined /> Logout
+            </button>
+          </div>
+        )}
+      </Drawer>
+    </header>
+  );
+};
+
+export default Header;
