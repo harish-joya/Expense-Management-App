@@ -20,6 +20,7 @@ app.use(cors());
 // API Routes
 app.use('/api/v1/user', require('./routes/userRoute'));
 app.use('/api/v1/user/transactions', require('./routes/transactionRoutes'));
+app.use("/api/v1/otp", require("./routes/OTPRoutes"));
 
 // Serve React static files
 const clientBuildPath = path.join(__dirname, './client/build');
