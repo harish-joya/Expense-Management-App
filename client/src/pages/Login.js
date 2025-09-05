@@ -1,6 +1,6 @@
-import {useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import { Button, Form, Input, message } from 'antd';
-import { Link,useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Spinner from '../components/Spinner';
 import '../styles/Login.css';
@@ -12,19 +12,33 @@ const Login = () => {
   const submitHandler = async (values) => {
     try {
       setLoading(true);
-      const {data} = await axios.post('/api/v1/user/login', values);
+      const { data } = await axios.post('/api/v1/user/login', values);
       setLoading(false);
-      message.success('Login successful');
-      localStorage.setItem('user', JSON.stringify({...data,password:''}));
-      navigate('/');
+
+      if (data.success) {
+        message.success('Login successful');
+        localStorage.setItem('user', JSON.stringify({ ...data, password: '' }));
+        navigate('/');
+      } else {
+        // Custom error from backend
+        message.error(data.message || 'Invalid credentials');
+      }
+
     } catch (error) {
       setLoading(false);
-      message.error('Something went wrong');
+
+      // Check if backend sends specific error
+      if (error.response && error.response.data) {
+        const errMsg = error.response.data.message || error.response.data.error;
+        message.error(errMsg || 'Invalid email or password');
+      } else {
+        message.error('Something went wrong');
+      }
     }
   };
 
-  useEffect(()=>{
-    if(localStorage.getItem('user')){
+  useEffect(() => {
+    if (localStorage.getItem('user')) {
       navigate('/');
     }
   }, [navigate]);
