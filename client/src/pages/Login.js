@@ -1,31 +1,41 @@
-import {useState, useEffect} from 'react';
-import { Button, Form, Input, message } from 'antd';
-import { Link,useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import Spinner from '../components/Spinner';
-import '../styles/Login.css';
+import { useState, useEffect } from "react";
+import { Button, Form, Input } from "antd"; 
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import Spinner from "../components/Spinner";
+import "../styles/Login.css";
 
 const Login = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(""); 
+  const [showError, setShowError] = useState(false); // control fade-out
 
   const submitHandler = async (values) => {
     try {
       setLoading(true);
-      const {data} = await axios.post('/api/v1/user/login', values);
+      setError("");
+      setShowError(false);
+
+      const { data } = await axios.post("/api/v1/user/login", values);
       setLoading(false);
-      message.success('Login successful');
-      localStorage.setItem('user', JSON.stringify({...data,password:''}));
-      navigate('/');
-    } catch (error) {
+
+      localStorage.setItem("user", JSON.stringify({ ...data, password: "" }));
+      navigate("/");
+    } catch (err) {
       setLoading(false);
-      message.error('Something went wrong');
+      const errMsg =
+        err.response?.data?.message || "Something went wrong, try again";
+      setError(errMsg);
+      setShowError(true);
+
+      setTimeout(() => setShowError(false), 5000);
     }
   };
 
-  useEffect(()=>{
-    if(localStorage.getItem('user')){
-      navigate('/');
+  useEffect(() => {
+    if (localStorage.getItem("user")) {
+      navigate("/");
     }
   }, [navigate]);
 
@@ -37,13 +47,16 @@ const Login = () => {
         {loading && <Spinner className="spinner" />}
         <h2 className="text-center mb-3">Login</h2>
 
+        {/* Error Alert */}
+        {showError && <div className="login-error">{error}</div>}
+
         <Form onFinish={submitHandler}>
           <Form.Item
             label="Email"
             name="email"
             rules={[
-              { required: true, message: 'Please enter your email!' },
-              { type: 'email', message: 'Please enter a valid email!' }
+              { required: true, message: "Please enter your email!" },
+              { type: "email", message: "Please enter a valid email!" },
             ]}
           >
             <Input type="email" autoComplete="email" />
@@ -52,7 +65,7 @@ const Login = () => {
           <Form.Item
             label="Password"
             name="password"
-            rules={[{ required: true, message: 'Please enter your password!' }]}
+            rules={[{ required: true, message: "Please enter your password!" }]}
           >
             <Input.Password autoComplete="current-password" />
           </Form.Item>

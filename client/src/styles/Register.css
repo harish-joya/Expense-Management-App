@@ -3,21 +3,34 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #f3f4f6; 
+  background: linear-gradient(135deg, #fcd5ce, #f8a5c2); 
+  font-family: 'Poppins', sans-serif;
+}
+
+.project-title {
+  font-size: 3rem;               
+  font-weight: 900;              
+  background: linear-gradient(90deg, #ec4899, #be123c); 
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; 
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 2rem;
+  text-shadow: 2px 2px 5px rgba(0,0,0,0.2); 
 }
 
 .register-card {
   width: 400px;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  padding: 2.5rem 2rem;
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.15);
   background-color: #fff;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .register-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+  transform: translateY(-5px);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.2);
 }
 
 .register-card h2 {
@@ -25,28 +38,45 @@
   color: #be123c;
   font-weight: 700;
   text-align: center;
+  letter-spacing: 1px;
+}
+
+.register-card .ant-form-item-control-input input,
+.register-card .ant-form-item-control-input input:focus {
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  padding: 10px;
+  transition: all 0.2s;
+}
+
+.register-card .ant-form-item-control-input input:focus {
+  border-color: #ec4899;
+  box-shadow: 0 0 8px rgba(236,72,153,0.3);
 }
 
 .register-card .ant-btn-primary {
   background: linear-gradient(to right, #ec4899, #be123c);
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   font-weight: 600;
-  transition: transform 0.2s;
+  font-size: 1rem;
+  transition: all 0.2s;
 }
 
 .register-card .ant-btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+  box-shadow: 0 8px 20px rgba(236,72,153,0.4);
 }
 
 .register-card a {
   color: #ec4899;
   font-weight: 500;
   text-decoration: none;
+  transition: color 0.2s;
 }
 
 .register-card a:hover {
+  color: #be123c;
   text-decoration: underline;
 }
 
@@ -56,14 +86,33 @@
   right: 10px;
 }
 
-.project-title {
-  font-size: 3rem;             
-  font-weight: 900;           
-  background: linear-gradient(90deg, #ec4899, #be123c); 
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-transform: uppercase;
+.register-error {
+  background-color: #fee2e2; 
+  color: #b91c1c; 
+  border: 1px solid #fca5a5;
+  padding: 0.8rem 1rem;
+  margin-bottom: 1rem;
+  border-radius: 12px;
   text-align: center;
-  margin-bottom: 2rem;
-  text-shadow: 2px 2px 5px rgba(0,0,0,0.3); 
+  font-weight: 500;
+  font-size: 0.95rem;
+  animation: fadeInOut 5s forwards;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-5px); }
+  10% { opacity: 1; transform: translateY(0); }
+  90% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-5px); }
+}
+
+@media (max-width: 480px) {
+  .register-card {
+    width: 90%;
+    padding: 2rem 1.5rem;
+  }
+  .project-title {
+    font-size: 2.5rem;
+  }
 }

@@ -1,8 +1,10 @@
+import "antd/dist/reset.css";
 import { Routes, Route, Navigate } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import "./index.css"; 
+
 
 function App() {
   return (

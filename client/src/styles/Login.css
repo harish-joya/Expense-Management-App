@@ -3,57 +3,8 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #f3f4f6; 
-}
-
-.login-card {
-  width: 360px;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-  background-color: #fff;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.login-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 25px rgba(0,0,0,0.15);
-}
-
-.login-card h2 {
-  margin-bottom: 1.5rem;
-  color: #be123c;
-  font-weight: 700;
-  text-align: center;
-}
-
-.login-card .ant-btn-primary {
-  background: linear-gradient(to right, #ec4899, #be123c);
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: transform 0.2s;
-}
-
-.login-card .ant-btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-}
-
-.login-card a {
-  color: #ec4899;
-  font-weight: 500;
-  text-decoration: none;
-}
-
-.login-card a:hover {
-  text-decoration: underline;
-}
-
-.login-card .spinner {
-  position: absolute;
-  top: 10px;
-  right: 10px;
+  background: linear-gradient(135deg, #fcd5ce, #f8a5c2); 
+  font-family: 'Poppins', sans-serif;
 }
 
 .project-title {
@@ -65,5 +16,103 @@
   text-transform: uppercase;
   text-align: center;
   margin-bottom: 2rem;
-  text-shadow: 2px 2px 5px rgba(0,0,0,0.3); 
+  text-shadow: 2px 2px 5px rgba(0,0,0,0.2); 
+}
+
+.login-card {
+  width: 360px;
+  padding: 2.5rem 2rem;
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+  background-color: #fff;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.login-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.2);
+}
+
+.login-card h2 {
+  margin-bottom: 1.5rem;
+  color: #be123c;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+.login-card .ant-form-item-control-input input,
+.login-card .ant-form-item-control-input input:focus {
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  padding: 10px;
+  transition: all 0.2s;
+}
+
+.login-card .ant-form-item-control-input input:focus {
+  border-color: #ec4899;
+  box-shadow: 0 0 8px rgba(236,72,153,0.3);
+}
+
+.login-card .ant-btn-primary {
+  background: linear-gradient(to right, #ec4899, #be123c);
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.login-card .ant-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(236,72,153,0.4);
+}
+
+.login-card a {
+  color: #ec4899;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.login-card a:hover {
+  color: #be123c;
+  text-decoration: underline;
+}
+
+.login-card .spinner {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.login-error {
+  background-color: #fee2e2; 
+  color: #b91c1c; 
+  border: 1px solid #fca5a5;
+  padding: 0.8rem 1rem;
+  margin-bottom: 1rem;
+  border-radius: 12px;
+  text-align: center;
+  font-weight: 500;
+  font-size: 0.95rem;
+  animation: fadeInOut 5s forwards;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-5px); }
+  10% { opacity: 1; transform: translateY(0); }
+  90% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-5px); }
+}
+
+@media (max-width: 480px) {
+  .login-card {
+    width: 90%;
+    padding: 2rem 1.5rem;
+  }
+  .project-title {
+    font-size: 2.5rem;
+  }
 }
