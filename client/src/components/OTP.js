@@ -1,67 +1,99 @@
-import React, { useState, useEffect, useRef } from "react";
+// src/components/OTP.js
+import React, { useState, useRef } from "react";
 import { Button, message } from "antd";
+import axios from "axios";
 import "../styles/OTP.css";
 
-const OTP = ({ generatedOtp, onVerify }) => {
+const OTP = ({ email, onVerify }) => {
   const [otp, setOtp] = useState(new Array(6).fill(""));
   const [otpError, setOtpError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
   const inputsRef = useRef([]);
 
-  // Handle OTP input change
   const handleOtpChange = (e, index) => {
-    const value = e.target.value;
-    if (/^[0-9]?$/.test(value)) { 
-      const newOtp = [...otp];
-      newOtp[index] = value;
-      setOtp(newOtp);
-
-      if (value && index < 5) {
-        inputsRef.current[index + 1].focus();
-      }
+    const value = e.target.value.replace(/\D/g, ""); // digits only
+    if (value.length <= 1) {
+      const next = [...otp];
+      next[index] = value;
+      setOtp(next);
+      if (value && index < 5) inputsRef.current[index + 1]?.focus();
     }
   };
 
-  const handleOtpBackspace = (e, index) => {
+  const handleOtpKeyDown = (e, index) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
-      inputsRef.current[index - 1].focus();
+      inputsRef.current[index - 1]?.focus();
+    }
+    if (e.key === "ArrowLeft" && index > 0) {
+      inputsRef.current[index - 1]?.focus();
+    }
+    if (e.key === "ArrowRight" && index < 5) {
+      inputsRef.current[index + 1]?.focus();
     }
   };
 
-  const handleSubmit = () => {
-    const enteredOtp = otp.join("");
-    if (enteredOtp === generatedOtp) {
-      message.success("OTP verified successfully!");
+  const handleSubmit = async () => {
+    const code = otp.join("");
+    if (code.length !== 6) {
+      setOtpError("Please enter all 6 digits");
+      return;
+    }
+    if (!email) {
+      setOtpError("Email missing. Please enter email first.");
+      return;
+    }
+
+    try {
+      setSubmitting(true);
       setOtpError("");
-      onVerify(true); 
-    } else {
-      setOtpError("Wrong OTP");
+      const { data } = await axios.post("/api/v1/otp/verify-otp", {
+        email,
+        otp: code,
+      });
+      if (data?.success) {
+        message.success("OTP verified successfully!");
+        onVerify(true);
+      } else {
+        setOtpError(data?.message || "Wrong OTP");
+        onVerify(false);
+      }
+    } catch (err) {
+      const msg = err.response?.data?.message || "Wrong OTP";
+      setOtpError(msg);
       onVerify(false);
+    } finally {
+      setSubmitting(false);
     }
   };
 
   return (
     <div className="otp-verification">
       <h4 className="text-center mb-3">Enter OTP</h4>
+
       <div className="otp-container">
-        {otp.map((num, index) => (
+        {otp.map((val, i) => (
           <input
-            key={index}
+            key={i}
             type="text"
+            inputMode="numeric"
             maxLength={1}
             className="otp-input"
-            value={num}
-            ref={(el) => (inputsRef.current[index] = el)}
-            onChange={(e) => handleOtpChange(e, index)}
-            onKeyDown={(e) => handleOtpBackspace(e, index)}
+            value={val}
+            ref={(el) => (inputsRef.current[i] = el)}
+            onChange={(e) => handleOtpChange(e, i)}
+            onKeyDown={(e) => handleOtpKeyDown(e, i)}
           />
         ))}
       </div>
+
       {otpError && <div className="otp-error">{otpError}</div>}
+
       <Button
         type="primary"
         block
-        style={{ marginTop: "1rem" }}
         onClick={handleSubmit}
+        loading={submitting}
+        style={{ marginTop: "1rem" }}
       >
         Verify OTP
       </Button>

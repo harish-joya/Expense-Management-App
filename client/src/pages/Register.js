@@ -1,9 +1,10 @@
+// src/pages/Register.js
 import { useState } from "react";
 import { Button, Form, Input, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Spinner from "../components/Spinner";
-import OTP from "../components/OTP";
+import OtpVerification from "../components/OTP"; // <-- import updated OTP
 import "../styles/Register.css";
 
 const Register = () => {
@@ -12,13 +13,11 @@ const Register = () => {
   const [otpSent, setOtpSent] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
   const [email, setEmail] = useState("");
-  const [generatedOtp, setGeneratedOtp] = useState("");
 
   const sendOtpHandler = async () => {
     if (!email) return message.error("Enter your email first!");
     try {
-      const { data } = await axios.post("/api/v1/otp/send-otp", { email });
-      setGeneratedOtp(data.otp); 
+      await axios.post("/api/v1/otp/send-otp", { email });
       message.success("OTP sent to your email");
       setOtpSent(true);
     } catch (error) {
@@ -28,7 +27,6 @@ const Register = () => {
 
   const handleOtpVerify = (status) => {
     setOtpVerified(status);
-    if (status) message.success("Email verified ✅");
   };
 
   const submitHandler = async (values) => {
@@ -48,41 +46,66 @@ const Register = () => {
   return (
     <div className="register-page d-flex flex-column align-items-center justify-content-center vh-100 bg-light">
       <h1 className="project-title mb-4 text-center">Expense Manager</h1>
-      <div className="register-card shadow-lg p-4 rounded" style={{ width: "400px" }}>
+
+      <div className="register-card shadow-lg p-4 rounded" style={{ width: "100%", maxWidth: 400 }}>
         {loading && <Spinner className="spinner" />}
         <h2 className="text-center mb-3">Register</h2>
 
         <Form layout="vertical" onFinish={submitHandler}>
-          <Form.Item label="Username" name="username" rules={[{ required: true, message: "Enter username" }]}>
+          <Form.Item
+            label="Username"
+            name="username"
+            rules={[{ required: true, message: "Please enter your username!" }]}
+          >
             <Input type="text" autoComplete="username" />
           </Form.Item>
 
-          <Form.Item label="Email" name="email" rules={[{ required: true, message: "Enter email" }]}>
-            <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <Form.Item
+            label="Email"
+            name="email"
+            rules={[
+              { required: true, message: "Please enter your email!" },
+              { type: "email", message: "Please enter a valid email!" },
+            ]}
+          >
+            <Input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              autoComplete="email"
+            />
           </Form.Item>
 
           {!otpSent && (
-            <Button type="default" block onClick={sendOtpHandler}>Send OTP</Button>
+            <Button type="default" block onClick={sendOtpHandler}>
+              Send OTP
+            </Button>
           )}
 
           {otpSent && !otpVerified && (
-            <OTP generatedOtp={generatedOtp} onVerify={handleOtpVerify} />
+            <OtpVerification email={email} onVerify={handleOtpVerify} />
           )}
 
           {otpVerified && <p className="text-success text-center">Email Verified ✅</p>}
 
-          <Form.Item label="Password" name="password" rules={[{ required: true, message: "Enter password" }]}>
+          <Form.Item
+            label="Password"
+            name="password"
+            rules={[{ required: true, message: "Please enter your password!" }]}
+          >
             <Input.Password autoComplete="new-password" />
           </Form.Item>
 
           <Form.Item>
             <p className="text-center">
-              <Link to="/login" className="text-decoration-none">Already registered? Login</Link>
+              <Link to="/login" className="text-decoration-none">
+                Already registered? <strong>Login</strong>
+              </Link>
             </p>
           </Form.Item>
 
           <Form.Item>
-            <Button className="register-btn" type="primary" htmlType="submit" block disabled={!otpVerified} >
+            <Button type="primary" htmlType="submit" block disabled={!otpVerified}>
               Register
             </Button>
           </Form.Item>
