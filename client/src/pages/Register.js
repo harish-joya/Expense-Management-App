@@ -1,10 +1,9 @@
-// src/pages/Register.js
 import { useState } from "react";
 import { Button, Form, Input, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Spinner from "../components/Spinner";
-import OtpVerification from "../components/OTP"; // <-- import updated OTP
+import OtpVerification from "../components/OTP";
 import "../styles/Register.css";
 
 const Register = () => {
@@ -17,8 +16,8 @@ const Register = () => {
   const sendOtpHandler = async () => {
     if (!email) return message.error("Enter your email first!");
     try {
-      await axios.post("/api/v1/otp/send-otp", { email });
-      message.success("OTP sent to your email");
+      const res = await axios.post("/api/v1/otp/send-otp", { email });
+      message.success(res.data.message); 
       setOtpSent(true);
     } catch (error) {
       message.error(error.response?.data?.message || "Failed to send OTP");
@@ -44,10 +43,13 @@ const Register = () => {
   };
 
   return (
-    <div className="register-page d-flex flex-column align-items-center justify-content-center vh-100 bg-light">
+    <div className="register-page d-flex flex-column align-items-center justify-content-center">
       <h1 className="project-title mb-4 text-center">Expense Manager</h1>
 
-      <div className="register-card shadow-lg p-4 rounded" style={{ width: "100%", maxWidth: 400 }}>
+      <div
+        className="register-card shadow-lg p-4 rounded"
+        style={{ width: "100%", maxWidth: 400 }}
+      >
         {loading && <Spinner className="spinner" />}
         <h2 className="text-center mb-3">Register</h2>
 
@@ -83,10 +85,18 @@ const Register = () => {
           )}
 
           {otpSent && !otpVerified && (
-            <OtpVerification email={email} onVerify={handleOtpVerify} />
+            <>
+              <OtpVerification email={email} onVerify={handleOtpVerify} />
+              <p className="text-muted text-center mt-2">
+                📧 Didn’t get the mail? Check your <strong>Inbox</strong> or{" "}
+                <strong>Spam</strong> folder.
+              </p>
+            </>
           )}
 
-          {otpVerified && <p className="text-success text-center">Email Verified ✅</p>}
+          {otpVerified && (
+            <p className="text-success text-center">Email Verified ✅</p>
+          )}
 
           <Form.Item
             label="Password"
@@ -105,7 +115,12 @@ const Register = () => {
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" block disabled={!otpVerified}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              block
+              disabled={!otpVerified}
+            >
               Register
             </Button>
           </Form.Item>
