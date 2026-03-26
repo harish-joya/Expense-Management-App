@@ -1,44 +1,96 @@
-const sgMail = require("@sendgrid/mail");
-
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const nodemailer = require("nodemailer");
 
 const otpStore = {};
+const requestTracker = {}; // 🔥 Track requests
+
+// 📧 Create transporter
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
 
 const sendOtp = async (req, res) => {
   try {
     const { email } = req.body;
+
     if (!email) {
-      return res.status(400).json({ success: false, message: "Email is required" });
+      return res.status(400).json({
+        success: false,
+        message: "Email is required",
+      });
     }
 
+    const currentTime = Date.now();
+
+    // 🔒 Initialize tracker
+    if (!requestTracker[email]) {
+      requestTracker[email] = {
+        lastRequestTime: 0,
+        count: 0,
+      };
+    }
+
+    const userTracker = requestTracker[email];
+
+    // ⏱ Cooldown: 60 seconds between requests
+    if (currentTime - userTracker.lastRequestTime < 60 * 1000) {
+      return res.status(429).json({
+        success: false,
+        message: "Please wait 60 seconds before requesting another OTP",
+      });
+    }
+
+    // 🔢 Max 5 OTP requests per hour
+    if (userTracker.count >= 5) {
+      return res.status(429).json({
+        success: false,
+        message: "Too many OTP requests. Try again later.",
+      });
+    }
+
+    // 🔢 Generate OTP
     const otp = Math.floor(100000 + Math.random() * 900000);
-    const expiresAt = Date.now() + 5 * 60 * 1000; 
+    const expiresAt = currentTime + 5 * 60 * 1000;
 
     otpStore[email] = { otp, expiresAt };
 
-    const msg = {
+    // 📊 Update tracker
+    userTracker.lastRequestTime = currentTime;
+    userTracker.count += 1;
+
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
       to: email,
-      from: process.env.SENDGRID_FROM,
-      subject: "Your OTP for Expense Manager",
-      text: `Your OTP is: ${otp}\n\nThis OTP is valid for 5 minutes.`,
+      subject: "OTP for Expense Manager",
+      html: `
+        <h2>Your OTP is: ${otp}</h2>
+        <p>This OTP is valid for 5 minutes.</p>
+      `,
     };
 
-    await sgMail.send(msg);
+    console.log("Sending OTP to:", email);
 
-    res.status(200).json({
+    await transporter.sendMail(mailOptions);
+
+    console.log("✅ Email sent successfully");
+
+    return res.status(200).json({
       success: true,
-      message: "OTP sent! Please check your inbox or spam folder.",
+      message: "OTP sent successfully",
     });
+
   } catch (error) {
-    console.error("OTP Error:", error.message);
-    res.status(500).json({
+    console.error("❌ EMAIL ERROR:", error.message);
+
+    return res.status(500).json({
       success: false,
       message: "Failed to send OTP",
-      error: error.message,
     });
   }
 };
-
 
 const verifyOtp = (req, res) => {
   try {
@@ -46,22 +98,37 @@ const verifyOtp = (req, res) => {
     const otpData = otpStore[email];
 
     if (!otpData) {
-      return res.status(400).json({ success: false, message: "OTP expired or not sent" });
+      return res.status(400).json({
+        success: false,
+        message: "OTP expired or not sent",
+      });
     }
 
     if (Date.now() > otpData.expiresAt) {
       delete otpStore[email];
-      return res.status(400).json({ success: false, message: "OTP expired" });
+      return res.status(400).json({
+        success: false,
+        message: "OTP expired",
+      });
     }
 
     if (parseInt(otp) === otpData.otp) {
       delete otpStore[email];
-      return res.status(200).json({ success: true, message: "OTP verified" });
+      return res.status(200).json({
+        success: true,
+        message: "OTP verified",
+      });
     } else {
-      return res.status(400).json({ success: false, message: "Wrong OTP" });
+      return res.status(400).json({
+        success: false,
+        message: "Wrong OTP",
+      });
     }
   } catch (error) {
-    res.status(500).json({ success: false, message: "Server error", error: error.message });
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
   }
 };
 
