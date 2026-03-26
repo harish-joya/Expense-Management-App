@@ -3,9 +3,11 @@ const nodemailer = require("nodemailer");
 const otpStore = {};
 const requestTracker = {}; // 🔥 Track requests
 
-// 📧 Create transporter
+// ✅ FIXED: Use Brevo SMTP (NOT Gmail)
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp-relay.brevo.com",
+  port: 587,
+  secure: false,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
@@ -35,7 +37,7 @@ const sendOtp = async (req, res) => {
 
     const userTracker = requestTracker[email];
 
-    // ⏱ Cooldown: 60 seconds between requests
+    // ⏱ Cooldown: 60 seconds
     if (currentTime - userTracker.lastRequestTime < 60 * 1000) {
       return res.status(429).json({
         success: false,
@@ -43,7 +45,7 @@ const sendOtp = async (req, res) => {
       });
     }
 
-    // 🔢 Max 5 OTP requests per hour
+    // 🔢 Max 5 requests
     if (userTracker.count >= 5) {
       return res.status(429).json({
         success: false,
@@ -62,7 +64,7 @@ const sendOtp = async (req, res) => {
     userTracker.count += 1;
 
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+      from: `"Expense Manager" <${process.env.EMAIL_USER}>`,
       to: email,
       subject: "OTP for Expense Manager",
       html: `
