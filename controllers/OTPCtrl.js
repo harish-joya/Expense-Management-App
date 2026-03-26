@@ -1,17 +1,31 @@
-const nodemailer = require("nodemailer");
+const axios = require("axios");
 
 const otpStore = {};
 
-// ✅ Brevo SMTP transporter
-const transporter = nodemailer.createTransport({
-  host: "smtp-relay.brevo.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+// 🔥 Function to send email using Brevo API
+const sendEmail = async (to, otp) => {
+  return axios.post(
+    "https://api.brevo.com/v3/smtp/email",
+    {
+      sender: {
+        name: "Expense Manager",
+        email: "expensemanager012@gmail.com", // ✅ verified sender
+      },
+      to: [{ email: to }],
+      subject: "OTP for Expense Manager",
+      htmlContent: `
+        <h2>Your OTP is: ${otp}</h2>
+        <p>This OTP is valid for 5 minutes.</p>
+      `,
+    },
+    {
+      headers: {
+        "api-key": process.env.BREVO_API_KEY,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+};
 
 const sendOtp = async (req, res) => {
   try {
@@ -30,19 +44,10 @@ const sendOtp = async (req, res) => {
 
     otpStore[email] = { otp, expiresAt };
 
-    const mailOptions = {
-      from: `"Expense Manager" <expensemanager012@gmail.com>`,
-      to: email,
-      subject: "OTP for Expense Manager",
-      html: `
-        <h2>Your OTP is: ${otp}</h2>
-        <p>This OTP is valid for 5 minutes.</p>
-      `,
-    };
-
     console.log("Sending OTP to:", email);
 
-    await transporter.sendMail(mailOptions);
+    // ✅ Send email via API (NOT SMTP)
+    await sendEmail(email, otp);
 
     console.log("✅ Email sent successfully");
 
@@ -52,7 +57,10 @@ const sendOtp = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("❌ EMAIL ERROR:", error.message);
+    console.error(
+      "❌ EMAIL ERROR:",
+      error.response?.data || error.message
+    );
 
     return res.status(500).json({
       success: false,
