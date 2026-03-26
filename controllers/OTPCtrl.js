@@ -1,16 +1,15 @@
 const nodemailer = require("nodemailer");
 
 const otpStore = {};
-const requestTracker = {}; // 🔥 Track requests
+const requestTracker = {}; 
 
-// ✅ FIXED: Use Brevo SMTP (NOT Gmail)
 const transporter = nodemailer.createTransport({
   host: "smtp-relay.brevo.com",
   port: 587,
   secure: false,
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    user: process.env.EMAIL_USER, 
+    pass: process.env.EMAIL_PASS,   
   },
 });
 
@@ -27,7 +26,6 @@ const sendOtp = async (req, res) => {
 
     const currentTime = Date.now();
 
-    // 🔒 Initialize tracker
     if (!requestTracker[email]) {
       requestTracker[email] = {
         lastRequestTime: 0,
@@ -37,7 +35,6 @@ const sendOtp = async (req, res) => {
 
     const userTracker = requestTracker[email];
 
-    // ⏱ Cooldown: 60 seconds
     if (currentTime - userTracker.lastRequestTime < 60 * 1000) {
       return res.status(429).json({
         success: false,
@@ -45,7 +42,6 @@ const sendOtp = async (req, res) => {
       });
     }
 
-    // 🔢 Max 5 requests
     if (userTracker.count >= 5) {
       return res.status(429).json({
         success: false,
@@ -53,18 +49,16 @@ const sendOtp = async (req, res) => {
       });
     }
 
-    // 🔢 Generate OTP
     const otp = Math.floor(100000 + Math.random() * 900000);
     const expiresAt = currentTime + 5 * 60 * 1000;
 
     otpStore[email] = { otp, expiresAt };
 
-    // 📊 Update tracker
     userTracker.lastRequestTime = currentTime;
     userTracker.count += 1;
 
     const mailOptions = {
-      from: `"Expense Manager" <${process.env.EMAIL_USER}>`,
+      from: `"Expense Manager" <expensemanager012@gmail.com>`,
       to: email,
       subject: "OTP for Expense Manager",
       html: `
