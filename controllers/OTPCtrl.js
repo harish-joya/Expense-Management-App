@@ -1,15 +1,15 @@
 const nodemailer = require("nodemailer");
 
 const otpStore = {};
-const requestTracker = {}; 
 
+// ✅ Brevo SMTP transporter
 const transporter = nodemailer.createTransport({
   host: "smtp-relay.brevo.com",
   port: 587,
   secure: false,
   auth: {
-    user: process.env.EMAIL_USER, 
-    pass: process.env.EMAIL_PASS,   
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
   },
 });
 
@@ -24,38 +24,11 @@ const sendOtp = async (req, res) => {
       });
     }
 
-    const currentTime = Date.now();
-
-    if (!requestTracker[email]) {
-      requestTracker[email] = {
-        lastRequestTime: 0,
-        count: 0,
-      };
-    }
-
-    const userTracker = requestTracker[email];
-
-    if (currentTime - userTracker.lastRequestTime < 60 * 1000) {
-      return res.status(429).json({
-        success: false,
-        message: "Please wait 60 seconds before requesting another OTP",
-      });
-    }
-
-    if (userTracker.count >= 5) {
-      return res.status(429).json({
-        success: false,
-        message: "Too many OTP requests. Try again later.",
-      });
-    }
-
+    // 🔢 Generate OTP
     const otp = Math.floor(100000 + Math.random() * 900000);
-    const expiresAt = currentTime + 5 * 60 * 1000;
+    const expiresAt = Date.now() + 5 * 60 * 1000;
 
     otpStore[email] = { otp, expiresAt };
-
-    userTracker.lastRequestTime = currentTime;
-    userTracker.count += 1;
 
     const mailOptions = {
       from: `"Expense Manager" <expensemanager012@gmail.com>`,
